@@ -1,0 +1,5 @@
+# DAS: threshold quantile chosen on the synthetic validation split, never on real test.
+selection:
+  das:
+    quantile: 0.4
+    fallback: topk

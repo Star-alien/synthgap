@@ -1,0 +1,3 @@
+# Balanced random-subset design: R = 500 subsets per (G, pi, dataset).
+design:
+  n_subsets: 500

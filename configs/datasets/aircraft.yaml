@@ -1,0 +1,4 @@
+# FGVC-Aircraft 2013b: 100 variants, official variant-level train/val/test split.
+dataset:
+  name: aircraft
+  alignment_k: 5

@@ -1,0 +1,15 @@
+# Full paper run: CUB-200-2011, four generators, P1 and P2 prompts.
+# Needs GPUs and the datasets (see docs/COMPUTE_PLAN.md).
+dataset:
+  name: cub
+  alignment_k: 5
+prompts:
+  regimes: [P1, P2]
+generation:
+  families: [sd15, sdxl, sd35, flux]
+  seeds: [0, 1, 2]
+  images_per_class_multiplier: 3
+features:
+  primary: dinov2
+  secondary: clip
+  selection: clip

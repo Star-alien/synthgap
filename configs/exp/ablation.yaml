@@ -1,0 +1,4 @@
+# Supplement ablations: tau, first-centre rule, selection embedding.
+selection:
+  das:
+    quantile: 0.4

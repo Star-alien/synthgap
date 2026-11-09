@@ -1,0 +1,5 @@
+# Use together with main.yaml: five selection seeds x three training seeds per cell.
+design:
+  factorial_training_seeds: [0, 1, 2]
+selection:
+  seeds: [0, 1, 2, 3, 4]

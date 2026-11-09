@@ -1,0 +1,11 @@
+# From-scratch ResNet-18 control (Sec. 6.3). GPU only.
+learner:
+  scratch:
+    arch: resnet18
+    epochs: 60
+    lr: 0.1
+    batch_size: 64
+    resolution: 128
+    weight_decay: 0.0005
+design:
+  scratch_families: 2

@@ -1,0 +1,5 @@
+# Oracle regime P3. Requires VLM captions, produced by:
+#   python -m synthgap.gen.caption --config configs/exp/main.yaml
+prompts:
+  regimes: [P3]
+  p3_captions: captions_cub.csv

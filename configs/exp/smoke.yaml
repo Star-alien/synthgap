@@ -1,0 +1,36 @@
+# CPU smoke test: procedural generators, cheap features, tiny grids.
+# Runs every stage in a few minutes and proves the pipeline is wired correctly.
+# These are NOT paper results.
+runtime:
+  mock: true
+  seed: 0
+dataset:
+  name: mockbirds
+  alignment_k: 5
+  real_val_k: 0
+prompts:
+  regimes: [P1, P2]
+generation:
+  families: [sd15, sdxl, sd35, flux]
+  seeds: [0]
+  images_per_class_multiplier: 3
+  batch_size: 16
+  steps: 0
+features:
+  cheap_dim: 96
+metrics:
+  knn_k: 3
+  improved_k: 2
+  alignment_temperature_grid: [0.02, 0.05, 0.1, 0.2]
+selection:
+  seeds: [0, 1]
+  diversity_quantile: 0.4
+  das:
+    quantile: 0.4
+learner:
+  max_iter: 120
+  weight_decay_grid: [0.0001, 0.001, 0.01]
+design:
+  factorial_training_seeds: [0, 1]
+  n_subsets: 40
+  scratch_families: 1

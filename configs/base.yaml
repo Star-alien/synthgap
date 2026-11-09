@@ -1,0 +1,99 @@
+# Project defaults. Every experiment config is deep-merged over this file.
+
+runtime:
+  seed: 0
+  mock: false # true => procedural generators + cheap features, CPU only (smoke test)
+  log_level: info
+  device: cuda
+  dtype: float16
+  num_workers: 4
+  batch_size: 32
+
+paths:
+  raw: data/raw
+  pools: data/pools
+  features: data/features
+  captions: data/captions
+  indices: data/indices
+  results: results
+
+dataset:
+  name: cub
+  alignment_k: 5 # |A| per class, carved from the real train split
+  real_val_k: 0 # extra per-class real val carved from train (0 = use official val if any)
+  index_seed: 0
+
+prompts:
+  regimes: [P1, P2]
+  p3_captions: null # CSV path (image,caption) produced by the VLM; required for P3
+
+generation:
+  images_per_class_multiplier: 3 # m in m*N
+  seeds: [0, 1, 2]
+  families: [sd15, sdxl, sd35, flux]
+  steps: 50
+  guidance: 2.0
+  batch_size: 8
+  save_format: png
+
+features:
+  primary: dinov2 # measurement embedding (Sec. 3.2)
+  secondary: clip # robustness + selection embedding
+  selection: clip # DAS/quantile/k-center operate in CLIP space
+  batch_size: 64
+  dinov2_model: facebook/dinov2-base
+  clip_model: ViT-L-14
+  clip_pretrained: laion2b_s32b_b82k
+  inception: true # Inception FID/KID (comparability only)
+  cheap_dim: 96 # only for mock mode
+
+metrics:
+  knn_k: 5 # coverage_knn and Naeem density/coverage
+  improved_k: 3 # improved precision/recall
+  vendi_chunk: 2048
+  alignment_temperature_grid: [0.01, 0.02, 0.05, 0.1, 0.2, 0.5]
+
+selection:
+  diversity_quantile: 0.40 # tau: pool quantile of A_real kept in the diversity arm
+  quantile_bands:
+    low: [0.0, 0.3333]
+    mid: [0.3333, 0.6667]
+    high: [0.6667, 1.0]
+  vendi_match_candidates: 200
+  seeds: [0, 1, 2, 3, 4]
+  das:
+    quantile: 0.4 # tau chosen on the synthetic validation split
+    fallback: topk # what to do when fewer than N survive
+
+learner:
+  impl: numpy # numpy | torch
+  loss: logreg # logreg (paper) | ridge (fast diagnostic)
+  weight_decay_grid: [0.0001, 0.001, 0.01, 0.1]
+  max_iter: 400
+  protocol: synthetic_val # synthetic_val (default) | real_val_upper_bound
+  synthetic_val_fraction: 0.2
+  scratch:
+    arch: resnet18
+    epochs: 60
+    lr: 0.1
+    batch_size: 64
+    resolution: 128
+    weight_decay: 0.0005
+    num_configs: 24
+
+design:
+  factorial_training_seeds: [0, 1, 2]
+  n_subsets: 500
+  subset_training_seeds: 1
+  bootstrap:
+    n: 2000
+    alpha: 0.05
+
+stats:
+  fixed_effects: true
+  standardize: true
+  min_cell_size: 3
+
+report:
+  title: "Do Better Generators Make Worse Teachers?"
+  smoke_banner: "SMOKE-TEST OUTPUT - NOT PAPER RESULTS"

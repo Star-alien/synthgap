@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "synthgap"
+version = "0.1.0"
+description = "Do Better Generators Make Worse Teachers? An interventional decomposition of synthetic training data for fine-grained recognition"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Anonymous CVPR submission" }]
+dependencies = [
+  "numpy>=1.26",
+  "scipy>=1.11",
+  "scikit-learn>=1.4",
+  "pandas>=2.1",
+  "matplotlib>=3.8",
+  "PyYAML>=6.0",
+  "Pillow>=10.0",
+  "tqdm>=4.66",
+]
+
+[project.optional-dependencies]
+# Everything needed to actually generate images, extract DINOv2/CLIP features
+# and train the from-scratch control. Install on the GPU machine.
+gpu = [
+  "torch>=2.2",
+  "torchvision>=0.17",
+  "diffusers>=0.31",
+  "transformers>=4.44",
+  "accelerate>=0.33",
+  "open_clip_torch>=2.26",
+  "pytorch-fid>=0.3.0",
+  "safetensors",
+  "sentencepiece",
+]
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+synthgap = "synthgap.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["synthgap*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

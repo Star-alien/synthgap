@@ -1,0 +1,24 @@
+.venv/
+.pylibs/
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+data/raw/
+data/pools/
+data/features/
+data/indices/
+data/captions/*.csv
+results/runs/
+results/tables/
+results/figures/
+results/RESULTS.md
+results/run.log
+wandb/
+*.log
+.DS_Store
+
+# chat source material (kept in the chat, not in the repo)
+files/
+
+dist/

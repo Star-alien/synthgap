@@ -1,0 +1,14 @@
+# Full GPU stack: generation (diffusers), feature extraction (DINOv2/CLIP) and the
+# from-scratch ResNet control. Install on the machine that runs the real experiments:
+#   pip install -r requirements.txt -r requirements-gpu.txt
+# PyTorch: pick the wheel that matches your CUDA, e.g.
+#   pip install torch --index-url https://download.pytorch.org/whl/cu121
+torch>=2.2
+torchvision>=0.17
+diffusers>=0.31
+transformers>=4.44
+accelerate>=0.33
+open_clip_torch>=2.26
+pytorch-fid>=0.3.0
+safetensors>=0.4
+sentencepiece>=0.2

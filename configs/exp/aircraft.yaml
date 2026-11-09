@@ -1,0 +1,4 @@
+# Same protocol on FGVC-Aircraft (100 variants, official variant-level split).
+dataset:
+  name: aircraft
+  alignment_k: 5

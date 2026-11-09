@@ -1,0 +1,4 @@
+# HAM10000 (exploratory third domain, supplement). Manual Kaggle download required.
+dataset:
+  name: ham10000
+  alignment_k: 5

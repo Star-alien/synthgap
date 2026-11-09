@@ -1,0 +1,5 @@
+# CUB-200-2011: 200 species, ~30 train images/class in the official split.
+dataset:
+  name: cub
+  alignment_k: 5
+  real_val_k: 0        # 0 => carve no extra real val (Real-N keeps all remaining train images)
