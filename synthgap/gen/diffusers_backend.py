@@ -52,6 +52,8 @@ class DiffusersBackend(GeneratorBackend):
         pipe = cls.from_pretrained(self.spec.model_id, torch_dtype=self.dtype, safety_checker=None)
         pipe = pipe.to(self.device)
         pipe.set_progress_bar_config(disable=True)
+        if hasattr(pipe, "enable_vae_slicing"):
+            pipe.enable_vae_slicing()
         if self.device == "cuda" and self.cfg.get("generation.low_vram", False):
             pipe.enable_attention_slicing()
             pipe.enable_model_cpu_offload()
@@ -78,6 +80,9 @@ class DiffusersBackend(GeneratorBackend):
             kwargs["guidance_scale"] = float(self.spec.guidance)
         else:
             kwargs["guidance_scale"] = float(self.cfg.generation.guidance)
+        res = self.cfg.get("generation.resolution", None)
+        if res:  # compute-limited runs may render below native resolution (documented in the paper)
+            kwargs["height"] = kwargs["width"] = int(res)
         output = self.pipe(**kwargs)
         return list(output.images)
 
