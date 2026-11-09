@@ -19,6 +19,7 @@ from .base import FAMILIES, GeneratorBackend, GenSpec
 _PIPELINE_CLASS = {
     "sd15": "StableDiffusionPipeline",
     "sdxl": "StableDiffusionXLPipeline",
+    "sdturbo": "StableDiffusionPipeline",
     "sd35": "StableDiffusion3Pipeline",
     "flux": "FluxPipeline",
 }
@@ -67,12 +68,14 @@ class DiffusersBackend(GeneratorBackend):
         generator = torch.Generator(device="cpu").manual_seed(int(seed))
         kwargs = dict(
             prompt=list(prompts),
-            num_inference_steps=int(self.cfg.generation.steps),
+            num_inference_steps=int(self.spec.steps if self.spec.fixed_sampling else self.cfg.generation.steps),
             num_images_per_prompt=int(images_per_prompt),
             generator=generator,
         )
         if self.spec.guidance_distilled:
             kwargs["guidance_scale"] = float(self.cfg.get("generation.guidance_embed", 2.0))
+        elif self.spec.fixed_sampling:
+            kwargs["guidance_scale"] = float(self.spec.guidance)
         else:
             kwargs["guidance_scale"] = float(self.cfg.generation.guidance)
         output = self.pipe(**kwargs)

@@ -327,8 +327,25 @@ def build_index(cfg: Cfg, refresh: bool = False) -> DatasetIndex:
         index = _load_flat_mock(root, alignment_k=k, real_val_k=int(cfg.dataset.real_val_k), seed=seed)
     else:
         raise ValueError(f"unknown dataset {name!r}")
+    max_classes = cfg.get("dataset.max_classes", None)
+    if max_classes:
+        index = subset_classes(index, int(max_classes))
     json_dump(index.to_dict(), cache)
     return index
+
+
+def subset_classes(index: "DatasetIndex", n: int) -> "DatasetIndex":
+    """Deterministic, evenly spaced class subset (keeps taxonomic spread; no cherry-picking)."""
+    total = index.num_classes
+    if n >= total:
+        return index
+    keep = sorted({int(round(i * (total - 1) / (n - 1))) for i in range(n)}) if n > 1 else [0]
+    pick = lambda seq: [seq[i] for i in keep]  # noqa: E731
+    meta = dict(index.meta, subset_of=total, kept_original_ids=keep)
+    return DatasetIndex(
+        name=index.name, root=index.root, classes=pick(index.classes), train=pick(index.train),
+        test=pick(index.test), val=pick(index.val), alignment=pick(index.alignment), meta=meta,
+    )
 
 
 def _load_flat_mock(root: Path, alignment_k: int, real_val_k: int, seed: int) -> DatasetIndex:

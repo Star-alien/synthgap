@@ -153,6 +153,11 @@ def build_pool(
         written = 0
         for chunk_idx in range(0, len(class_prompts), batch):
             chunk = class_prompts[chunk_idx : chunk_idx + batch]
+            existing = [folder / f"{chunk_idx + o:05d}.{suffix}" for o in range(len(chunk))]
+            if all(e.exists() for e in existing):  # resume: chunk already generated
+                for o, e in enumerate(existing):
+                    paths.append(str(e)); classes.append(c); prompts.append(chunk[o]); written += 1
+                continue
             images = backend.generate(chunk, seed=int(seed) * 100_003 + chunk_idx, images_per_prompt=1)
             for offset, image in enumerate(images):
                 path = folder / f"{chunk_idx + offset:05d}.{suffix}"

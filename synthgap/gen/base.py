@@ -19,6 +19,7 @@ class GenSpec:
     guidance: float = 2.0
     guidance_distilled: bool = False
     note: str = ""
+    fixed_sampling: bool = False  # use this spec's steps/guidance instead of cfg.generation.*
 
 
 FAMILIES: dict[str, GenSpec] = {
@@ -33,6 +34,15 @@ FAMILIES: dict[str, GenSpec] = {
         model_id="stabilityai/stable-diffusion-xl-base-1.0",
         native_resolution=1024,
         note="native 1024^2",
+    ),
+    "sdturbo": GenSpec(
+        family="sdturbo",
+        model_id="stabilityai/sd-turbo",
+        native_resolution=512,
+        steps=4,
+        guidance=0.0,
+        fixed_sampling=True,
+        note="adversarially distilled SD2.1; 4 steps, no CFG (compute-limited stand-in)",
     ),
     "sd35": GenSpec(
         family="sd35",
