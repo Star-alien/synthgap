@@ -1,0 +1,13 @@
+# CVPR 2027 submission (review format)
+
+`main.pdf` is the compiled paper, built from `main.tex` with the official CVPR 2027 author kit (`cvpr.sty`, `ieeenat_fullname.bst`).
+
+Numbers and tables are **generated from `results_pilot/`** by `python scripts/make_tex.py` (writes `gen_macros.tex`, `gen_tables.tex`). Nothing in the results is typed by hand.
+
+Build: `tectonic main.tex` (or upload this folder to Overleaf and compile `main.tex`).
+
+## Before submitting (authors)
+- Confirm/rewrite the LLM usage statement (bracketed text) and verify every citation against its original publication.
+- Add the name/version of the LLM that wrote the P2 templates.
+- This version is a **pilot** (20 CUB classes, 3 generators, 1 seed). See Sec. 7 of the paper for what was not run.
+- The paper is anonymous; do not cite this repository URL in the review copy.
