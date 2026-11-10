@@ -1,0 +1,28 @@
+| generator | method | images | acc (%) | delta |
+| --- | --- | --- | --- | --- |
+| real | Real 5-shot | 100 | 97.8 | -- |
+| real | Real-N | 480 | 98.6 | -- |
+| sd15 | Random-N | 480 | 90.6 | 0.00 |
+| sd15 | All-mN | 1440 | 90.4 | -0.02 |
+| sd15 | k-center only | 480 | 88.5 | -0.26 |
+| sd15 | Filter only (A_text) | 480 | 91.6 | 0.13 |
+| sd15 | DAS-text | 480 | 94.0 | 0.43 |
+| sd15 | Filter only (A_real) | 480 | 90.6 | 0.00 |
+| sd15 | DAS-real | 480 | 93.0 | 0.30 |
+| sd15 | Real 5-shot + DAS-real | 580 | 97.9 | 0.91 |
+| sdturbo | Random-N | 480 | 93.8 | 0.00 |
+| sdturbo | All-mN | 1440 | 95.4 | 0.32 |
+| sdturbo | k-center only | 480 | 92.5 | -0.29 |
+| sdturbo | Filter only (A_text) | 480 | 96.2 | 0.50 |
+| sdturbo | DAS-text | 480 | 95.0 | 0.25 |
+| sdturbo | Filter only (A_real) | 480 | 95.2 | 0.29 |
+| sdturbo | DAS-real | 480 | 95.9 | 0.43 |
+| sdturbo | Real 5-shot + DAS-real | 580 | 98.5 | 0.96 |
+| sdxl | Random-N | 480 | 95.9 | 0.00 |
+| sdxl | All-mN | 1440 | 96.2 | 0.12 |
+| sdxl | k-center only | 480 | 96.6 | 0.25 |
+| sdxl | Filter only (A_text) | 480 | 97.3 | 0.50 |
+| sdxl | DAS-text | 480 | 97.1 | 0.44 |
+| sdxl | Filter only (A_real) | 480 | 97.3 | 0.50 |
+| sdxl | DAS-real | 480 | 97.1 | 0.44 |
+| sdxl | Real 5-shot + DAS-real | 580 | 97.6 | 0.62 |

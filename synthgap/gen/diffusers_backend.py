@@ -39,7 +39,12 @@ class DiffusersBackend(GeneratorBackend):
         self.cfg = cfg
         self.log = log or Logger("generator")
         self.spec: GenSpec = FAMILIES[family]
-        self.device = cfg.runtime.device if torch.cuda.is_available() else "cpu"
+        if torch.cuda.is_available():
+            self.device = cfg.runtime.device
+        elif getattr(torch.backends, "mps", None) and torch.backends.mps.is_available():
+            self.device = "mps"
+        else:
+            self.device = "cpu"
         self.dtype = getattr(torch, cfg.runtime.dtype) if self.device == "cuda" else torch.float32
         self.pipe = self._load()
 

@@ -278,6 +278,9 @@ def stage_measure(study: Study) -> pd.DataFrame:
                 log.info(f"  {family}/{regime}/s{seed}: acc={result['accuracy']*100:.1f}")
     # autoencoder ceiling
     for family in study.families():
+        if family in [str(f) for f in (study.cfg.get("generation.skip_vae") or [])]:
+            log.warn(f"skipping VAE ceiling for {family} (generation.skip_vae)")
+            continue
         pool = study.vae_pool(family)
         result = study.evaluate(pool, np.arange(pool.n), train_seed=0)
         rows.append({**common, "family": f"vae.{family}", "regime": "VAE", "seed": 0, "selection": "VAE-ceiling", **result})

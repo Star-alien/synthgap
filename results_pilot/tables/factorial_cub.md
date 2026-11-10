@@ -1,0 +1,23 @@
+| generator | quantity | estimate (pp) |
+| --- | --- | --- |
+| sd15 | diversity | +0.06 [-0.09, +0.34] |
+| sd15 | alignment | +12.19 [+12.05, +12.48] |
+| sd15 | interaction | +1.60 [+1.03, +1.88] |
+| sd15 | cell:low/low | +82.11 [+81.54, +82.39] |
+| sd15 | cell:low/high | +93.50 [+93.50, +93.50] |
+| sd15 | cell:high/low | +81.37 [+81.37, +81.37] |
+| sd15 | cell:high/high | +94.36 [+94.36, +94.36] |
+| sdturbo | diversity | -0.68 [-0.68, -0.68] |
+| sdturbo | alignment | +3.93 [+3.93, +3.93] |
+| sdturbo | interaction | +0.34 [+0.34, +0.34] |
+| sdturbo | cell:low/low | +92.48 [+92.48, +92.48] |
+| sdturbo | cell:low/high | +96.24 [+96.24, +96.24] |
+| sdturbo | cell:high/low | +91.62 [+91.62, +91.62] |
+| sdturbo | cell:high/high | +95.73 [+95.73, +95.73] |
+| sdxl | diversity | -0.46 [-0.68, -0.34] |
+| sdxl | alignment | +1.25 [+1.03, +1.37] |
+| sdxl | interaction | +0.91 [+0.68, +1.37] |
+| sdxl | cell:low/low | +96.47 [+96.24, +96.92] |
+| sdxl | cell:low/high | +97.26 [+97.26, +97.26] |
+| sdxl | cell:high/low | +95.56 [+95.56, +95.56] |
+| sdxl | cell:high/high | +97.26 [+97.26, +97.26] |

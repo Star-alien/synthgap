@@ -44,6 +44,14 @@ class FeatureBackend(ABC):
 # --------------------------------------------------------------------------------------
 # real backends
 # --------------------------------------------------------------------------------------
+def _pick_device(torch, requested: str) -> str:
+    if requested == "cuda" and torch.cuda.is_available():
+        return "cuda"
+    if getattr(torch.backends, "mps", None) and torch.backends.mps.is_available():
+        return "mps"
+    return "cpu"
+
+
 class Dinov2Backend(FeatureBackend):
     name = "dinov2"
 
@@ -52,7 +60,7 @@ class Dinov2Backend(FeatureBackend):
         from transformers import AutoModel
 
         self.torch = torch
-        self.device = device if torch.cuda.is_available() else "cpu"
+        self.device = _pick_device(torch, device)
         self.model = AutoModel.from_pretrained(model_id).to(self.device).eval()
         self.dim = int(self.model.config.hidden_size)
         self.batch_size = batch_size
@@ -87,7 +95,7 @@ class ClipBackend(FeatureBackend):
         import open_clip
 
         self.torch = torch
-        self.device = device if torch.cuda.is_available() else "cpu"
+        self.device = _pick_device(torch, device)
         self.model, _, self.preprocess = open_clip.create_model_and_transforms(
             model_name, pretrained=pretrained, device=self.device
         )
@@ -130,7 +138,7 @@ class InceptionBackend(FeatureBackend):
         from pytorch_fid.inception import InceptionV3
 
         self.torch = torch
-        self.device = device if torch.cuda.is_available() else "cpu"
+        self.device = _pick_device(torch, device)
         block = InceptionV3.BLOCK_INDEX_BY_DIM[2048]
         self.model = InceptionV3([block], resize_input=True, normalize_input=True).to(self.device).eval()
         self.batch_size = batch_size

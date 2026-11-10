@@ -1,0 +1,5 @@
+# Settings for the local analysis of the compute-limited pilot.
+generation:
+  skip_vae: [sdxl]      # SDXL VAE reference needs full-res decoding; not run (memory)
+design:
+  n_subsets: 150        # reduced from 500 for the pilot

@@ -1,0 +1,8 @@
+runtime:
+  device: mps
+  dtype: float32
+  mock: false
+paths:
+  raw: data/raw
+features:
+  batch_size: 32

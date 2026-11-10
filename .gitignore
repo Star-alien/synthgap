@@ -22,3 +22,9 @@ wandb/
 files/
 
 dist/
+
+# pilot: raw downloaded images and account-specific kaggle metadata stay local
+kaggle_out/
+kaggle/*/kernel-metadata.json
+data/raw/
+data/pools/

@@ -1,0 +1,17 @@
+{
+  "pairs": {
+    "vendi-coverage": 0.9132273393765499,
+    "vendi-alignment": 0.5381365833905353,
+    "vendi-precision": 0.9226740742064864,
+    "coverage-alignment": 0.44539417897792344,
+    "coverage-precision": 0.9066973070813735,
+    "alignment-precision": 0.4760118570585566
+  },
+  "vif": {
+    "vendi": 147.04531976763158,
+    "coverage": 35.95661204984429,
+    "alignment": 62.79179953017986,
+    "precision": 38.55729133080182
+  },
+  "max_abs_pair": 0.9226740742064864
+}

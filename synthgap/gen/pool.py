@@ -229,6 +229,12 @@ def build_vae_ceiling_pool(
     for c in range(index.num_classes):
         folder = ensure_dir(directory / f"{c:04d}")
         real = index.class_paths("train", c)[: index.per_class_train]
+        done = [folder / f"{i:05d}.{suffix}" for i in range(len(real))]
+        if all(d.exists() for d in done):  # resume: class already reconstructed
+            for d in done:
+                paths.append(str(d)); classes.append(c)
+                prompts.append(f"vae reconstruction of a real {index.classes[c]}")
+            continue
         recon = backend.reconstruct([Image.open(p).convert("RGB") for p in real])
         for i, image in enumerate(recon):
             out = folder / f"{i:05d}.{suffix}"
