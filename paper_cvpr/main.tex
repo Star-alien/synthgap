@@ -18,8 +18,17 @@
 Disentangling Diversity, Label Alignment and Fidelity in Synthetic Training Data}
 \author{Anonymous CVPR submission\\Paper ID \textbf{*****}}
 
+\setlength{\textfloatsep}{8pt plus 2pt minus 2pt}\setlength{\floatsep}{6pt plus 2pt minus 2pt}\setlength{\intextsep}{6pt plus 2pt minus 2pt}
 \begin{document}
+\twocolumn[{%
+\renewcommand\twocolumn[1][]{#1}%
 \maketitle
+\centering
+\includegraphics[width=\linewidth]{figs/fig1.pdf}
+\captionof{figure}{\textbf{Left:} cross-generator comparisons change everything at once; we instead fix the generator $G$ and prompt regime $\pi$ and vary only \emph{which} images form the training set. \textbf{Right:} a $2{\times}2$ intervention on 20 CUB-200 classes. Raising label alignment lifts real-test accuracy by $+12.2$, $+3.9$ and $+1.3$ points for SD1.5, SD-Turbo and SDXL; raising diversity does not help ($-0.7$ to $+0.1$). The fixable deficit of synthetic data is \emph{correctness}, and it shrinks as generators improve. Note the per-panel $y$-scales.}
+\label{fig:teaser}
+\vspace{1em}
+}]
 
 \begin{abstract}
 Newer text-to-image generators produce images that look better yet train worse classifiers, a regression recently attributed to a collapse toward narrow, aesthetic-centric distributions. That diagnosis is correlational, rests on generic ImageNet classes, and comes without a remedy. We ask which property of a synthetic training set actually drives real-test accuracy, and we answer by intervention rather than correlation. Holding the generator, prompt and pool of images fixed, we construct training sets that differ in only one measured property: intrinsic diversity, coverage of the real distribution, label alignment, or per-sample fidelity. We use a $2{\times}2$ factorial and a balanced random-subset design with a Shapley decomposition. Under a hard compute limit, this version is a pilot: three open generators (SD1.5, SD-Turbo, SDXL) on 20 classes of the fine-grained CUB-200-2011 dataset, evaluated with a frozen-backbone linear probe. In this setting the regression does \emph{not} replicate: SDXL is the best teacher (\accCa\% vs.\ \accBa\% and \accAa\% under class-name prompts; real data \RealN\%). Within a fixed pool, label alignment moves accuracy (\effAlnA, \effAlnB{} and \effAlnC{} points for SD1.5, SD-Turbo and SDXL) while diversity has no measurable effect, but the four properties are too collinear for a reliable Shapley attribution (within-pool $R^2{=}\withinRtwo\%$). DAS, a training-free recipe (oversample, filter by label alignment, then select for coverage), closes \dasMin{}--\dasMax\% of the gap between naive synthetic and matched real data, but a plain alignment filter does about as well. We report where it does not help.
@@ -39,15 +48,14 @@ Taking this route forces several distinctions that correlational studies tend to
 
 The decomposition suggests a remedy that needs no generator training. DAS (Diversity-matched, Alignment-filtered Sampling) oversamples each class, discards images that a few-shot real classifier or a text-only scorer does not recognise as the prompted class, and then selects for coverage with greedy $k$-center~\cite{gonzalez1985clustering,sener2018active}. We compare it with natural alternatives, including simply training on the whole oversampled pool, so that the benefit of selection is not confused with the benefit of more images.
 
-\paragraph{Scope of this version.} The full design (four generators, two fine-grained datasets, three generation seeds, about 600 A100 GPU-hours) was out of reach. We ran it at pilot scale on free T4 GPUs (20 CUB classes, SD1.5, SD-Turbo, SDXL, two prompts, one generation seed). Every claim is scoped to that setting; Sec.~\ref{sec:limits} lists what was and was not run.
+\paragraph{Findings.} On 20 CUB-200-2011 classes with SD1.5, SD-Turbo and SDXL:
+\begin{itemize}\setlength\itemsep{0pt}\setlength\topsep{2pt}
+\item \textbf{No generational regression here.} SDXL trains the best classifier, and of the standard generator metrics only $\FDD$ ranks the three generators as their data does; precision ranks the worst teacher first (Sec.~\ref{sec:cross}).
+\item \textbf{Correct before diverse.} Holding the pool fixed, raising label alignment lifts accuracy by up to 12.2 points; raising diversity does not help (Fig.~\ref{fig:teaser}).
+\item \textbf{The gap lives in a few classes} the generator does not know (Fig.~\ref{fig:gap}).
+\item \textbf{DAS}, a training-free selection rule, beats random selection in every setting and all $3\times$ images in 5/6, but most of its gain comes from the filter (Fig.~\ref{fig:das}).
+\end{itemize}
 
-\paragraph{Contributions.}
-\begin{enumerate}
-\item An interventional decomposition of the synthetic-to-real gap into diversity, coverage, label alignment and fidelity, with generator and prompt held fixed, run here at pilot scale. It includes an autoencoder-reconstruction control that isolates latent-space artifacts from distributional effects.
-\item Evidence from a fine-grained domain (20 CUB-200-2011 classes) across three generators and two prompt regimes. We show that the relative importance of each factor \emph{shifts} with generator quality: label alignment is large for the weakest generator and small for the strongest, while diversity does not matter, together with a per-class analysis relating the gap to how well the generator knows each class.
-\item DAS, a training-free selection recipe. We report the fraction of the real-data gap it closes, a compute-matched comparison against using all generated images, and the settings where it fails.
-\item Methodological checks that we found necessary: two independent alignment scorers, and separation of the embedding used for selection from the one used for measurement, so that DAS cannot win by optimising the metric it is scored on. (A from-scratch control for the linear-probe protocol is implemented but was not run in this version.)
-\end{enumerate}
 We state our hypotheses in advance (Sec.~\ref{sec:hyp}) and report negative outcomes as findings.
 
 %-------------------------------------------------------------------------
@@ -136,8 +144,8 @@ undefined when the denominator is near zero, in which case we report raw accurac
 \section{Results}
 All results are for 20 CUB classes, one generation seed per pool, and a 585-image test set; one test image is $0.17$ points. Intervals reflect selection and training randomness, not generation randomness.
 
-\subsection{Cross-generator picture}
-Figure~\ref{fig:hook} and Tab.~\ref{tab:main} report the uncontrolled comparison that motivates the paper. It tests, at small scale and on fine-grained data, whether the experiment of~\cite{adamkiewicz2026pretty} replicates.
+\subsection{Cross-generator picture}\label{sec:cross}
+Figure~\ref{fig:metrics} and Tab.~\ref{tab:main} report the uncontrolled comparison that motivates the paper. It tests, at small scale and on fine-grained data, whether the experiment of~\cite{adamkiewicz2026pretty} replicates.
 
 \paragraph{The regression does not replicate here.} Under P1, accuracy is \accAa\% (SD1.5), \accCa\% (SDXL) and \accBa\% (SD-Turbo), ordered by release date; Kendall's $\tau$ over release order is $+\tauPa$ (P2: $+\tauPb$), so there is no monotone decline. The newest large model, SDXL, is the best teacher, \accCa\% against \RealN\% for real data. SD-Turbo is no better than SD1.5 under P1 (\accBa\% vs.\ \accAa\%, about three test images) but is better under P2 (\accBb\% vs.\ \accAb\%). We read this as a finding about domain dependence and scale: with three generators we cannot say the regression is absent in general.
 
@@ -145,41 +153,46 @@ Figure~\ref{fig:hook} and Tab.~\ref{tab:main} report the uncontrolled comparison
 
 \paragraph{Prompts and the autoencoder ceiling.} P2 changes accuracy by less than 0.4 points for SD1.5 and SDXL and raises SD-Turbo from \accBa\% to \accBb\%; P3 was not run. Re-rendering real images through the autoencoder gives \vaeA\% (SD1.5) and \vaeB\% (SD-Turbo), against \RealN\% for the originals, so autoencoder artifacts explain at most 0.3 points of the gap; the rest is a property of what the generators draw.
 
-\begin{figure}[t]
-\centering\includegraphics[width=\columnwidth]{figs/fig1_cub.pdf}
-\caption{\textbf{Looking better, teaching worse?} Accuracy (black) vs.\ precision (left) and $\FDD$ (right, inverted), P1, in release order. Dotted: autoencoder ceiling; green: Real-$N$.}\label{fig:hook}
-\end{figure}
-\input{gen_tables}% Table 1 (main), factorial, H3, DAS tables are emitted by scripts/make_tex.py
+\begin{figure*}[t]
+\centering\includegraphics[width=\textwidth]{figs/fig2.pdf}
+\caption{\textbf{Which generator metric predicts training utility?} Real-test accuracy against five generator-level metrics for three generators under P1 (filled) and P2 (open); bars are Wilson 95\% intervals, the band is Real-$N$. $\FDD$ (axis inverted) and $A_\text{text}$ order the P1 generators correctly; precision, coverage and Vendi do not.}\label{fig:metrics}
+\end{figure*}
+\input{tab_main}% Tables 1-3 are generated from results_pilot/ by scripts/make_tex_tables.py
 
 \subsection{Interventional decomposition}
-\paragraph{Factorial (Fig.~\ref{fig:fact}, Tab.~\ref{tab:factorial}).} Raising label alignment helps a lot for the weakest generator (\effAlnA{} points for SD1.5), less for SD-Turbo (\effAlnB) and little for SDXL (\effAlnC). Raising diversity does nothing or slightly hurts (\effDivA, \effDivB, \effDivC). The interaction is positive for all three (\effIntA, \effIntB, \effIntC), which is the direction the label-noise argument of Sec.~4 predicts (diversity helps, or hurts less, when images are correctly labelled), but its size is below one point for two of the three generators, so we do not claim more. Plausibly, weaker generators more often draw the wrong or an unrecognisable bird, so filtering helps most there (untested).
+\paragraph{Factorial (Fig.~\ref{fig:teaser}, Tab.~\ref{tab:factorial}).} Raising label alignment helps a lot for the weakest generator (\effAlnA{} points for SD1.5), less for SD-Turbo (\effAlnB) and little for SDXL (\effAlnC). Raising diversity does nothing or slightly hurts (\effDivA, \effDivB, \effDivC). The interaction is positive for all three (\effIntA, \effIntB, \effIntC), which is the direction the label-noise argument of Sec.~4 predicts (diversity helps, or hurts less, when images are correctly labelled), but its size is below one point for two of the three generators, so we do not claim more. Plausibly, weaker generators more often draw the wrong or an unrecognisable bird, so filtering helps most there (untested).
 
-\begin{figure}[t]
-\centering\includegraphics[width=0.82\columnwidth]{figs/fig2a_cub.pdf}
-\caption{\textbf{Which property matters?} $2{\times}2$ factorial (diversity $\times$ alignment), P2. Cells use extreme quantile subsets, so they are not comparable to Tab.~\ref{tab:main}.}\label{fig:fact}
+\input{tab_factorial}
+\begin{figure}[tbp]
+\centering\includegraphics[width=0.62\columnwidth]{figs/fig3.pdf}
+\caption{\textbf{Why attribution fails at pilot scale.} \textbf{Left:} correlations and variance-inflation factors of the four factors across 450 random subsets; $D$, $C$ and $F$ are nearly collinear. \textbf{Right:} subsets vary mostly \emph{between} pools; within a pool, coverage moves little.}\label{fig:collin}
 \end{figure}
 
 \paragraph{Within-pool decomposition (H1).} Over $\nsubsets$ random subsets per generator, the regression explains only \withinRtwo\% of the variance in accuracy. The Shapley shares are D \shwD\%, C \shwC\%, A \shwA\% and F \shwF\%. Numerically $C{+}A>F$ and $C>D$, as H1 predicts, but the totals are tiny and we computed no confidence intervals, so \textbf{we neither confirm nor refute H1}. The factors are also strongly collinear: Vendi correlates \corrVC{} with coverage and \corrVP{} with precision, and variance inflation factors range from \vifMin{} to \vifMax{} (values above 10 are usually taken as serious), which limits what any decomposition can claim. The between-generator version has only three points for four predictors and is not identified, so the paper's central contrast, cross-generator correlation versus within-pool attribution, \emph{cannot be drawn at this scale}. Recomputation in CLIP space and with $\Atext$ in place of $\Areal$ was not run.
 
 \paragraph{Class familiarity (H3).} Regressing the per-class gap on familiarity gives negative slopes for all three generators (SD1.5 \hslopeA{} [\hloA, \hhiA], SD-Turbo \hslopeB{} [\hloB, \hhiB], SDXL \hslopeC{} [\hloC, \hhiC]; 95\% bootstrap intervals), i.e.\ a larger gap for classes the generator knows poorly. The OLS fits are strong for SD-Turbo ($R^2{=}\hrB$, $p{=}\hpB$) and SDXL ($R^2{=}\hrC$, $p{=}\hpC$) and weak for SD1.5 ($R^2{=}\hrA$, $p{=}\hpA$), but the bootstrap intervals for SD-Turbo and SDXL include zero while SD1.5's does not, because the per-class gaps are zero-inflated. The two tests disagree, so \textbf{H3 is only weakly supported}. The least familiar class is the same for all three generators, Chuck-will's-widow (familiarity \lowfamA, \lowfamB, \lowfamC; gaps of \lowgapA\%, \lowgapB\% and \lowgapC\%); for SD-Turbo the probe classifies none of its test images correctly. We did not investigate why.
 
-\subsection{From-scratch control and DAS}
+\begin{figure}[tbp]
+\centering\includegraphics[width=0.62\columnwidth]{figs/fig4.pdf}
+\caption{\textbf{Where the gap lives.} Per-class accuracy gap (real minus synthetic, P1) against class familiarity, with OLS fits. Most classes have no gap; two account for 58--82\% of it. SD-Turbo's Bay-breasted Warbler has a 30-point gap at familiarity 0.995.}\label{fig:gap}
+\end{figure}
+
+\subsection{From-scratch control and DAS}\label{sec:das-res}
+\input{tab_das}
+\begin{figure}[tbp]
+\centering\includegraphics[width=0.62\columnwidth]{figs/fig5.pdf}
+\caption{\textbf{Gain over Random-$N$} (480 images, P2). $k$-center alone hurts weaker generators; filtering by alignment carries most of DAS's benefit.}\label{fig:das}
+\end{figure}
 \paragraph{From-scratch control.} Not run in this version, so conclusions are restricted to the supervision setting (a head on a real-pretrained backbone); we make no claim that the ranking carries over to pretraining.
 \paragraph{DAS against the baselines (Tab.~\ref{tab:das}).} DAS-real improves over random selection by \gainDasRA{} (SD1.5), \gainDasRB{} (SD-Turbo) and \gainDasRC{} points (SDXL), and DAS-text by \gainDasTA, \gainDasTB{} and \gainDasTC. In terms of $\Delta$, DAS-real closes \twdDasRA, \twdDasRB{} and \twdDasRC{} of the gap and DAS-text \twdDasTA, \twdDasTB{} and \twdDasTC. DAS beats training on all $3N$ images in five of six comparisons, so the gain is not just from having more images (SD-Turbo with DAS-text, \twaccDasTB\%, is below All-$mN$, \twaccAllB\%). \textbf{But filtering alone is about as good:} it equals or beats DAS in three of six cases (SD-Turbo with $\Atext$, SDXL with both scorers), so we cannot credit DAS's diversity step with an improvement. $k$-center alone is below random for SD1.5 and SD-Turbo. Real 5-shot (\RealFiveTwo\%) still beats every synthetic-only set, so five real images are worth more than a curated synthetic set. Adding DAS-selected images to them gives \twaccHybA\%, \twaccHybB\% and \twaccHybC\%, within about 0.7 points of 5-shot alone, so the hybrid is not clearly useful at this scale.
 
-\paragraph{Per-generator spread.} DAS helps the weaker generators more (+2.4 for SD1.5, +2.1 for SD-Turbo, +1.2 for SDXL for DAS-real), the opposite of what we would expect if newer generators' deficit were coverage rather than alignment. This fits the factorial: the fixable deficit is mostly alignment.
+\paragraph{Ablations.} Moving the alignment threshold over the 20th, 40th and 60th percentile changes DAS accuracy by about one point at most (SD1.5 \ablLoA--\ablHiA\%, SD-Turbo \ablLoB--\ablHiB\%, SDXL \ablLoC--\ablHiC\%); $m$ and selection-embedding ablations were not run.
 
-\paragraph{Ablations.} Moving the alignment threshold over the 20th, 40th and 60th percentile changes DAS accuracy by about one point at most (SD1.5 \ablLoA--\ablHiA\%, SD-Turbo \ablLoB--\ablHiB\%, SDXL \ablLoC--\ablHiC\%), and the first-centre rule changes little ($m$ and selection-embedding ablations not run).
+\paragraph{Mixing with real data.} With 5 or 10 real images per class, adding synthetic images changes accuracy by between \mixMin{} and \mixMax{} points with no consistent direction; real-only accuracy is already about 98\%, so we cannot identify where synthetic data stops helping.
 
-\paragraph{Mixing with real data (Fig.~\ref{fig:mix}).} With 5 or 10 real images per class, adding synthetic images changes accuracy by between \mixMin{} and \mixMax{} points, with no consistent direction. Real-only accuracy is already about 98\%, so we cannot identify a real-data budget at which synthetic data stops helping, and cannot say whether DAS moves it.
-
-\begin{figure}[t]
-\centering\includegraphics[width=0.78\columnwidth]{figs/fig3_cub.pdf}
-\caption{\textbf{Does synthetic data still help once real data is available?} Real images per class $\in\{0,5,10,\text{all}\}$ plus random or DAS-real synthetic images. Real-only is near ceiling.}\label{fig:mix}
-\end{figure}
-\begin{figure}[t]
-\centering\includegraphics[width=0.5\columnwidth]{figs/fig4_cub.pdf}
-\caption{\textbf{What the filter removes.} Six lowest-$\Areal$ SD1.5 (P2) images in three random classes (chosen by rule). Many show clutter and a barely visible bird.}\label{fig:fail}
+\begin{figure}[tbp]
+\centering\includegraphics[width=0.5\columnwidth]{figs/fig6.pdf}
+\caption{\textbf{What the filter removes.} The six lowest-$\Areal$ SD1.5 (P2) images for three classes chosen by a fixed random rule (rows are not hand-picked). Failures include a bird too small to identify, anatomically wrong puffins, and a different species. The top row also shows the cost of a 5-shot scorer: several plausible sparrows score low.}\label{fig:fail}
 \end{figure}
 
 %-------------------------------------------------------------------------
@@ -188,13 +201,13 @@ Figure~\ref{fig:hook} and Tab.~\ref{tab:main} report the uncontrolled comparison
 
 \paragraph{Scope of this version (what was not run).} (i) Only 20 of 200 CUB classes, evenly spaced; they are easy (real data reaches \RealN\%), which compresses differences. (ii) Three generators, one generation seed per pool, 585 test images: one image is 0.17 points, so many differences in Tab.~\ref{tab:das} are one to six images. (iii) SDXL at $768^2$; generators differ in steps and guidance as well as quality, so they are confounded. SD3.5 and FLUX, which the title question is really about, were not run. (iv) Not run: FGVC-Aircraft, HAM10000, P3, extra generation seeds, the from-scratch control, the CLIP-space and $\Atext$ reruns, the $m$ and embedding ablations and SDXL's autoencoder ceiling; 150 instead of 500 subsets were drawn, and the Shapley shares have no confidence intervals. (v) SD-Turbo's P1 precision and coverage (\precBa, \covBa) are unusually low and should be checked before being relied on.
 
-\paragraph{Scope of the learner and data.} The probe measures synthetic images as supervision for a head on a strong real-pretrained backbone, not as pretraining data; we confine our claims to that setting. We cover one fine-grained domain, three open generators and classification only. Closed generators, detection and segmentation, and generators fine-tuned on in-domain data~\cite{kim2024datadream} are out of scope; DAS should compose with the latter, but we have not shown that. DAS-real needs five real images per class. DAS-text needs none, but its scorer inherits CLIP's weaknesses on fine-grained classes and may discard correct images on domains CLIP knows poorly. Every set-level metric also depends on an embedding: we separate the selection embedding (CLIP) from the measurement embedding (DINOv2) but did not recompute everything in the other space, and per-class precision and recall use few images and are noisy.
+\paragraph{Scope of the learner and data.} The probe measures synthetic images as supervision for a head on a strong real-pretrained backbone, not as pretraining data. We cover one fine-grained domain, three open generators and classification only; generators fine-tuned on in-domain data~\cite{kim2024datadream} are out of scope. DAS-real needs five real images per class; DAS-text needs none, but its scorer inherits CLIP's weaknesses and may discard correct images on domains CLIP knows poorly. Selection (CLIP) and measurement (DINOv2) embeddings are separate, but we did not recompute everything in the other space.
 
-\paragraph{Implications.} Within the scope above: (i) for a weak generator, check label alignment before worrying about diversity; a free CLIP zero-shot filter gave the largest gain at no generation cost beyond oversampling. (ii) Do not rank generators by precision alone; in this pilot $\FDD$ tracked accuracy and precision did not. (iii) When five real images per class exist, they beat curated synthetic sets, so use them directly (and for alignment). (iv) Generator developers who want their models used as data sources should report per-class label alignment on fine-grained classes, not only prompt following.
+\paragraph{Implications.} Within this scope: (i) for a weak generator, check label alignment before diversity. (ii) Do not rank generators by precision alone; $\FDD$ tracked accuracy and precision did not.
 
-\paragraph{Data, licences and societal impact.} We use only an existing, published dataset (CUB-200-2011) under its research-use terms, collect no new human-subject data, and use generators under their licences for non-commercial research. The main foreseeable risk is over-confidence: a selection recipe that narrows the synthetic-to-real gap on benchmarks could encourage substituting synthetic for real data in high-stakes domains such as medical imaging, where generator failures are hardest to see. Our results, including where DAS does not help, argue for validating on real data in exactly those settings. Code and selection indices will be released.
+\paragraph{Data, licences and societal impact.} We use only CUB-200-2011 under its research-use terms, no new human-subject data, and generators under their licences. The main risk is over-confidence: a recipe that narrows the synthetic-to-real gap on benchmarks could encourage substituting synthetic for real data in high-stakes domains; where DAS does not help, validate on real data. Code and selection indices will be released.
 
-\paragraph{LLM usage statement.} [\emph{Authors to confirm.}] An LLM assistant (Claude, Anthropic) drafted the structure and text of all sections from the authors' research plan, compiled the bibliography, wrote and ran the experiment and analysis code, and drafted the results text from stored outputs. [\emph{Authors: verify every citation, rewrite the text, and take responsibility for all claims.}] P2 templates: [\emph{authors: name/version of the LLM used}]. Numbers in tables and figures are written by the code from stored outputs; none were edited or selected by hand.
+\paragraph{LLM usage.} [\emph{Authors to confirm.}] An LLM assistant (Claude, Anthropic) drafted text, code and bibliography from the authors' plan; P2 templates: [\emph{authors: LLM name/version}]. [\emph{Authors: verify every citation and claim.}] All numbers are written by code from stored outputs.
 
 {\small
 \bibliographystyle{ieeenat_fullname}

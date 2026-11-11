@@ -11,3 +11,7 @@ Build: `tectonic main.tex` (or upload this folder to Overleaf and compile `main.
 - Add the name/version of the LLM that wrote the P2 templates.
 - This version is a **pilot** (20 CUB classes, 3 generators, 1 seed). See Sec. 7 of the paper for what was not run.
 - The paper is anonymous; do not cite this repository URL in the review copy.
+
+
+## Restyled version
+The paper keeps its original text and title but uses the figures, tables (Wilson CIs, bold best) and teaser/findings layout of the review version. Tables `tab_*.tex` come from `python scripts/make_tex_tables.py`; `gen_macros.tex` holds the inline numbers. Figures 1-6 are cropped from the review PDF (plot code not in repo). Body is 8 pages, references on 9-10.
