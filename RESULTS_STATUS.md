@@ -2,7 +2,7 @@
 
 **What was run (real data, no fabricated numbers):** a compute-limited pilot on 20 evenly spaced CUB-200-2011 classes,
 three generators (SD1.5, SD-Turbo, SDXL at 768px), prompts P1/P2, one generation seed. Generation ran on free Kaggle T4
-GPUs; analysis ran on a laptop (Apple GPU). Outputs: `results_pilot/` (tables, figures, CSVs) and the CVPR-format paper `paper_cvpr/main.pdf`.
+GPUs; analysis ran on a laptop (Apple GPU). Outputs: `results_pilot/` (tables, figures, CSVs) and the CVPR-format paper `paper_cvpr/main.pdf` (title: *What Makes Synthetic Training Data Work? A Pilot Interventional Study on Fine-Grained Classification*; source `paper_cvpr/main.tex`, numbers checked by `scripts/verify_paper_numbers.py`).
 
 **What was NOT run:** FGVC-Aircraft, SD3.5 / FLUX, 3 generation seeds, the oracle caption prompt P3, the from-scratch ResNet
 control, SDXL's VAE reference, and the full 500-subset design (150 used). See Section 5 of the paper.

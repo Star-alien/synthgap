@@ -1,0 +1,31 @@
+\begin{table}[t]
+\centering\scriptsize
+\setlength{\tabcolsep}{1.5pt}
+\begin{tabular}{@{}lcrrrrrr@{}}
+\toprule
+ & Real & \multicolumn{2}{c}{SD1.5} & \multicolumn{2}{c}{SD-Turbo} & \multicolumn{2}{c}{SDXL} \\
+Method & /cls & Acc & $\Delta$ & Acc & $\Delta$ & Acc & $\Delta$ \\
+\midrule
+Random-N & 0 & 90.6 & 0 & 93.8 & 0 & 95.9 & 0 \\
+All-$mN$ (3$\times$ images) & 0 & 90.4 & $-$0.02 & 95.4 & +0.32 & 96.2 & +0.12 \\
+$k$-center only & 0 & 88.5 & $-$0.26 & 92.5 & $-$0.29 & 96.6 & +0.25 \\
+Filter only ($A_\text{text}$) & 0 & 91.6 & +0.13 & \textbf{96.2} & +0.50 & \textbf{97.3} & +0.50 \\
+DAS-text & 0 & \textbf{94.0}$^*$ & +0.43 & 95.0 & +0.25 & 97.1 & +0.44 \\
+\midrule
+Filter only ($A_\text{real}$) & 5 & 90.6 & +0.00 & 95.2 & +0.29 & \textbf{97.3} & +0.50 \\
+DAS-real & 5 & 93.0 & +0.30 & 95.9 & +0.43 & 97.1 & +0.44 \\
+\midrule
+Real 5-shot + DAS-real & 5 & 97.9 & +0.91 & 98.5 & +0.96 & 97.6 & +0.62 \\
+Real 5-shot (no synthetic) & 5 & \multicolumn{6}{c}{97.8} \\
+Real-$N$ (reference) & all & \multicolumn{6}{c}{98.6} \\
+\midrule
+\multicolumn{8}{@{}l}{\emph{DAS-real ablations (accuracy)}} \\
+\quad $\tau$ = 20th pct. & 5 & \multicolumn{2}{c}{93.2} & \multicolumn{2}{c}{95.0} & \multicolumn{2}{c}{96.4} \\
+\quad $\tau$ = 40th pct.\ (default) & 5 & \multicolumn{2}{c}{93.0} & \multicolumn{2}{c}{95.9} & \multicolumn{2}{c}{97.1} \\
+\quad $\tau$ = 60th pct. & 5 & \multicolumn{2}{c}{93.3} & \multicolumn{2}{c}{96.1} & \multicolumn{2}{c}{97.4} \\
+\quad centroid-nearest anchor & 5 & \multicolumn{2}{c}{94.4} & \multicolumn{2}{c}{95.7} & \multicolumn{2}{c}{97.3} \\
+\bottomrule
+\end{tabular}
+\caption{\textbf{DAS versus its ablations} (P2, 480 images unless noted). $\Delta$: fraction of gap closed (Eq.~\ref{eq:delta}). Bold: best synthetic-only set. $^*$: $p{<}0.05$ vs.\ Random-$N$ under a conservative unpaired test; one test image is 0.17 points. Real 5-shot was re-trained in this stage and differs from Tab.~\ref{tab:main} by one test image.}
+\label{tab:das}
+\end{table}
