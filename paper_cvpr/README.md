@@ -14,4 +14,4 @@ Build: `tectonic main.tex` (or upload this folder to Overleaf and compile `main.
 
 
 ## Restyled version
-The paper keeps its original text and title but uses the figures, tables (Wilson CIs, bold best) and teaser/findings layout of the review version. Tables `tab_*.tex` come from `python scripts/make_tex_tables.py`; `gen_macros.tex` holds the inline numbers. Figures 1-6 are cropped from the review PDF (plot code not in repo). Body is 8 pages, references on 9-10.
+The paper keeps its original text and title but uses the figures, tables (Wilson CIs, bold best) and teaser/findings layout of the review version. Tables `tab_*.tex` come from `python scripts/make_tex_tables.py`; `gen_macros.tex` holds the inline numbers. Figures 1-6 are generated from the stored results by `scripts/make_figures.py` (Figs 1-5 from `results_pilot/runs/*`, Fig 6 from the SD1.5/P2 pool images and cached alignment scores; classes chosen by a seed-0 rule) and saved separately in `results_pilot/figures/fig{1..6}.{pdf,png}`. Body is 8 pages, references on 9-10.

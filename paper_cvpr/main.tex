@@ -164,7 +164,7 @@ Figure~\ref{fig:metrics} and Tab.~\ref{tab:main} report the uncontrolled compari
 
 \input{tab_factorial}
 \begin{figure}[tbp]
-\centering\includegraphics[width=0.62\columnwidth]{figs/fig3.pdf}
+\centering\includegraphics[width=0.56\columnwidth]{figs/fig3.pdf}
 \caption{\textbf{Why attribution fails at pilot scale.} \textbf{Left:} correlations and variance-inflation factors of the four factors across 450 random subsets; $D$, $C$ and $F$ are nearly collinear. \textbf{Right:} subsets vary mostly \emph{between} pools; within a pool, coverage moves little.}\label{fig:collin}
 \end{figure}
 
@@ -173,25 +173,25 @@ Figure~\ref{fig:metrics} and Tab.~\ref{tab:main} report the uncontrolled compari
 \paragraph{Class familiarity (H3).} Regressing the per-class gap on familiarity gives negative slopes for all three generators (SD1.5 \hslopeA{} [\hloA, \hhiA], SD-Turbo \hslopeB{} [\hloB, \hhiB], SDXL \hslopeC{} [\hloC, \hhiC]; 95\% bootstrap intervals), i.e.\ a larger gap for classes the generator knows poorly. The OLS fits are strong for SD-Turbo ($R^2{=}\hrB$, $p{=}\hpB$) and SDXL ($R^2{=}\hrC$, $p{=}\hpC$) and weak for SD1.5 ($R^2{=}\hrA$, $p{=}\hpA$), but the bootstrap intervals for SD-Turbo and SDXL include zero while SD1.5's does not, because the per-class gaps are zero-inflated. The two tests disagree, so \textbf{H3 is only weakly supported}. The least familiar class is the same for all three generators, Chuck-will's-widow (familiarity \lowfamA, \lowfamB, \lowfamC; gaps of \lowgapA\%, \lowgapB\% and \lowgapC\%); for SD-Turbo the probe classifies none of its test images correctly. We did not investigate why.
 
 \begin{figure}[tbp]
-\centering\includegraphics[width=0.62\columnwidth]{figs/fig4.pdf}
+\centering\includegraphics[width=0.56\columnwidth]{figs/fig4.pdf}
 \caption{\textbf{Where the gap lives.} Per-class accuracy gap (real minus synthetic, P1) against class familiarity, with OLS fits. Most classes have no gap; two account for 58--82\% of it. SD-Turbo's Bay-breasted Warbler has a 30-point gap at familiarity 0.995.}\label{fig:gap}
 \end{figure}
 
 \subsection{From-scratch control and DAS}\label{sec:das-res}
 \input{tab_das}
 \begin{figure}[tbp]
-\centering\includegraphics[width=0.62\columnwidth]{figs/fig5.pdf}
+\centering\includegraphics[width=0.56\columnwidth]{figs/fig5.pdf}
 \caption{\textbf{Gain over Random-$N$} (480 images, P2). $k$-center alone hurts weaker generators; filtering by alignment carries most of DAS's benefit.}\label{fig:das}
 \end{figure}
 \paragraph{From-scratch control.} Not run in this version, so conclusions are restricted to the supervision setting (a head on a real-pretrained backbone); we make no claim that the ranking carries over to pretraining.
 \paragraph{DAS against the baselines (Tab.~\ref{tab:das}).} DAS-real improves over random selection by \gainDasRA{} (SD1.5), \gainDasRB{} (SD-Turbo) and \gainDasRC{} points (SDXL), and DAS-text by \gainDasTA, \gainDasTB{} and \gainDasTC. In terms of $\Delta$, DAS-real closes \twdDasRA, \twdDasRB{} and \twdDasRC{} of the gap and DAS-text \twdDasTA, \twdDasTB{} and \twdDasTC. DAS beats training on all $3N$ images in five of six comparisons, so the gain is not just from having more images (SD-Turbo with DAS-text, \twaccDasTB\%, is below All-$mN$, \twaccAllB\%). \textbf{But filtering alone is about as good:} it equals or beats DAS in three of six cases (SD-Turbo with $\Atext$, SDXL with both scorers), so we cannot credit DAS's diversity step with an improvement. $k$-center alone is below random for SD1.5 and SD-Turbo. Real 5-shot (\RealFiveTwo\%) still beats every synthetic-only set, so five real images are worth more than a curated synthetic set. Adding DAS-selected images to them gives \twaccHybA\%, \twaccHybB\% and \twaccHybC\%, within about 0.7 points of 5-shot alone, so the hybrid is not clearly useful at this scale.
 
-\paragraph{Ablations.} Moving the alignment threshold over the 20th, 40th and 60th percentile changes DAS accuracy by about one point at most (SD1.5 \ablLoA--\ablHiA\%, SD-Turbo \ablLoB--\ablHiB\%, SDXL \ablLoC--\ablHiC\%); $m$ and selection-embedding ablations were not run.
+\paragraph{Ablations.} Moving the alignment threshold over the 20th, 40th and 60th percentile changes DAS accuracy by about one point at most (SD1.5 \ablLoA--\ablHiA\%, SD-Turbo \ablLoB--\ablHiB\%, SDXL \ablLoC--\ablHiC\%).
 
 \paragraph{Mixing with real data.} With 5 or 10 real images per class, adding synthetic images changes accuracy by between \mixMin{} and \mixMax{} points with no consistent direction; real-only accuracy is already about 98\%, so we cannot identify where synthetic data stops helping.
 
 \begin{figure}[tbp]
-\centering\includegraphics[width=0.5\columnwidth]{figs/fig6.pdf}
+\centering\includegraphics[width=0.44\columnwidth]{figs/fig6.pdf}
 \caption{\textbf{What the filter removes.} The six lowest-$\Areal$ SD1.5 (P2) images for three classes chosen by a fixed random rule (rows are not hand-picked). Failures include a bird too small to identify, anatomically wrong puffins, and a different species. The top row also shows the cost of a 5-shot scorer: several plausible sparrows score low.}\label{fig:fail}
 \end{figure}
 
@@ -201,11 +201,11 @@ Figure~\ref{fig:metrics} and Tab.~\ref{tab:main} report the uncontrolled compari
 
 \paragraph{Scope of this version (what was not run).} (i) Only 20 of 200 CUB classes, evenly spaced; they are easy (real data reaches \RealN\%), which compresses differences. (ii) Three generators, one generation seed per pool, 585 test images: one image is 0.17 points, so many differences in Tab.~\ref{tab:das} are one to six images. (iii) SDXL at $768^2$; generators differ in steps and guidance as well as quality, so they are confounded. SD3.5 and FLUX, which the title question is really about, were not run. (iv) Not run: FGVC-Aircraft, HAM10000, P3, extra generation seeds, the from-scratch control, the CLIP-space and $\Atext$ reruns, the $m$ and embedding ablations and SDXL's autoencoder ceiling; 150 instead of 500 subsets were drawn, and the Shapley shares have no confidence intervals. (v) SD-Turbo's P1 precision and coverage (\precBa, \covBa) are unusually low and should be checked before being relied on.
 
-\paragraph{Scope of the learner and data.} The probe measures synthetic images as supervision for a head on a strong real-pretrained backbone, not as pretraining data. We cover one fine-grained domain, three open generators and classification only; generators fine-tuned on in-domain data~\cite{kim2024datadream} are out of scope. DAS-real needs five real images per class; DAS-text needs none, but its scorer inherits CLIP's weaknesses and may discard correct images on domains CLIP knows poorly. Selection (CLIP) and measurement (DINOv2) embeddings are separate, but we did not recompute everything in the other space.
+\paragraph{Scope of the learner and data.} The probe measures synthetic images as supervision for a head on a strong real-pretrained backbone, not as pretraining data. We cover one fine-grained domain, three open generators and classification only; generators fine-tuned on in-domain data~\cite{kim2024datadream} are out of scope. DAS-real needs five real images per class; DAS-text needs none, but its scorer inherits CLIP's weaknesses and may discard correct images on domains CLIP knows poorly.
 
-\paragraph{Implications.} Within this scope: (i) for a weak generator, check label alignment before diversity. (ii) Do not rank generators by precision alone; $\FDD$ tracked accuracy and precision did not.
+\paragraph{Implications.} For a weak generator, check label alignment before diversity; and do not rank generators by precision alone.
 
-\paragraph{Data, licences and societal impact.} We use only CUB-200-2011 under its research-use terms, no new human-subject data, and generators under their licences. The main risk is over-confidence: a recipe that narrows the synthetic-to-real gap on benchmarks could encourage substituting synthetic for real data in high-stakes domains; where DAS does not help, validate on real data. Code and selection indices will be released.
+\paragraph{Data, licences and societal impact.} We use only CUB-200-2011 under its research-use terms, no new human-subject data, and generators under their licences. The main risk is over-confidence: narrowing the benchmark gap could encourage replacing real with synthetic data in high-stakes domains; validate on real data there. Code and selection indices will be released.
 
 \paragraph{LLM usage.} [\emph{Authors to confirm.}] An LLM assistant (Claude, Anthropic) drafted text, code and bibliography from the authors' plan; P2 templates: [\emph{authors: LLM name/version}]. [\emph{Authors: verify every citation and claim.}] All numbers are written by code from stored outputs.
 
